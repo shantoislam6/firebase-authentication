@@ -1,25 +1,51 @@
+
+const state = {
+    isUnauthorized : false,
+}
+
 // add admin to cloud function addAdminRole
 const addAdminForm = document.querySelector('.admin-actions');
 addAdminForm.addEventListener('submit', function(e){
     e.preventDefault();
+
+    const adminMessage = document.querySelector('.admin-message');
     const adminEmail = this.adminEmail.value;
     const addAdminRole = functions.httpsCallable('addAdminRole');
+
+    const spinner = this.querySelector('.btn-l-spinner-a');
+    spinner.style.display = 'block';
+
     addAdminRole({email: adminEmail}).then(result=>{
-        console.log(result);
-    })
+        const resultdata = result.data;
+        let html = '';
+        if(resultdata.error){
+            html = `<span class="red-text">${resultdata.message}</span>`;
+        }else{
+            html = `<span class="orange-text">${resultdata.message}</span>`;
+        }
+        adminMessage.innerHTML = html;
+        spinner.style.display = 'none';
+        this.adminEmail.value = '';
+    });
+
 });
 // listen for auth status changes
 auth.onAuthStateChanged((user)=>{
 
-    // invoke unauthenticate ui function 
+    // invoce reset function
     initAndReset();
-    setUpUi(user);
+    
 
     // check user is not null 
     if(user){
+
        //get user user claims from  addAdmin cloud onCall function 
         user.getIdTokenResult().then(idTokenResult=>{
-        user.admin = idTokenResult.claims.admin;
+             user.admin = idTokenResult.claims.admin;
+             setUpUi(user);
+        });
+
+        
         db.collection('guides').get().then(snapshot=>{
             if(snapshot.empty){
                 setupGuides('EMPTY');
@@ -32,24 +58,29 @@ auth.onAuthStateChanged((user)=>{
             changes.forEach(change=>{
                 switch (change.type) {
                 case 'added':
-                setupGuides(change.doc);
+                  if(!state.isUnauthorized){
+                    setupGuides(change.doc);
+                  }
                 break;
             }
         });
         }, (err) => {
           console.log(err) ;
        }); 
- });
-}else{
-    setupGuides(null);
-  }
+
+    }else{
+
+        // invoke unauthenticate ui function
+        setUpUi();
+        setupGuides(null);
+    }
 });
 
    // Create Guieds 
 const createGuideFrom = document.querySelector('#create-form');
 createGuideFrom.addEventListener('submit', function(e){
    e.preventDefault();
-
+   
     const errCont = this.parentNode.querySelector(".show-err");
     const spinner = this.querySelector('.btn-l-spinner');
     spinner.style.display = 'block';
@@ -61,17 +92,18 @@ createGuideFrom.addEventListener('submit', function(e){
     })
     .then(()=>{
         errCont.innerHTML = '';
+        state.isUnauthorized = false;
         spinner.style.display = 'none';
         const model = document.querySelector("#modal-create");
         M.Modal.getInstance(model).close();
         this.reset();
     })
     .catch(err=> {
+        state.isUnauthorized = true;
         spinner.style.display = 'none';
         errCont.innerHTML = err.message;
     });
 });
-
 
 // sign-up form
 const signUpForm = document.querySelector('#signup-form');

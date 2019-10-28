@@ -15,6 +15,7 @@ const guides = document.querySelector('.guides');
 const loggedOutLinks = document.querySelectorAll('.logged-out');
 const loggedInLinks = document.querySelectorAll('.logged-in');
 const acoundDetails = document.querySelector('.account-details');
+const adminsDom = document.querySelectorAll('.admin');
 
 // Setup ui based on login and logout
  function setUpUi(user){
@@ -25,6 +26,7 @@ const acoundDetails = document.querySelector('.account-details');
       let html = `
          <p>Logged in as ${user.email}</p>
          <p>Logged in as ${userData.bio}</p>
+        ${user.admin == true ? `<p class="pink-text"><strong>Admin</strong></p>` : '' }
       `;
          // show account details 
         acoundDetails.innerHTML = html;
@@ -33,18 +35,37 @@ const acoundDetails = document.querySelector('.account-details');
     loggedInLinks.forEach(el=>{
       el.style.display = 'block'
     });
+    
     loggedOutLinks.forEach(el=>{
       el.style.display = 'none'
     });
+
+    if(user.admin == true){
+      adminsDom.forEach(el=>{
+        el.style.display = 'block';
+      });
+    }else{
+      adminsDom.forEach(el=>{
+        el.style.display = 'none';
+      });
+    }
+
   }else{
     loggedInLinks.forEach(el=>{
       el.style.display = 'none';
     });
+
+    adminsDom.forEach(el=>{
+      el.style.display = 'none';
+    });
+
     loggedOutLinks.forEach(el=>{
       el.style.display = 'block';
     });
+  
     acoundDetails.innerHTML = 'You are Unauthorized';
   }
+  
 }
 
  function setupGuides(doc){

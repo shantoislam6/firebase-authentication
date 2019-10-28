@@ -22,6 +22,14 @@
           top: 9px;
           right: -5px;
       }
+      .btn-l-spinner-a {
+        width: 20px;
+        float: right;
+        position: relative !important;
+        right: -7px;
+        top: 5px;
+        display: none;
+    }
     
   </style>
 </head>
@@ -40,7 +48,7 @@
           <li class="logged-in" style="display:none">
             <a href="#" class="grey-text waves-effect waves-light" id="logout">Logout</a>
           </li>
-          <li class="logged-in" style="display:none">
+          <li class="admin" style="display:none">
             <a href="#" class="grey-text modal-trigger" data-target="modal-create">Create Guide</a>
           </li>
           <li class="logged-out" style="display:none">
@@ -138,9 +146,14 @@
 
 
    <!-- ADMIN ACTIONS -->
-   <form class="center-align admin-actions admin" style="margin: 40px auto; max-width: 300px; display: block;">
+   <form class="center-align admin-actions admin" style="margin: 40px auto; max-width: 300px; display: none;">
       <input type="email" placeholder="User email" name="adminEmail" id="admin-email" required />
-      <button class="btn-small yellow waves-effect waves-dark darken-2 z-depth-0">Make admin</button>
+      <button class="btn-small yellow waves-effect waves-dark darken-2 z-depth-0">Make admin
+        <img class="btn-l-spinner-a" src="img/loading-spin.svg">
+      </button>
+      </br>
+       </br>
+      <div class="admin-message"></div>
     </form>
   
   <!-- GUIDE LIST -->
