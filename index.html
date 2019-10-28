@@ -6,11 +6,29 @@
   <!-- Compiled and minified CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <title>GameGuidez</title>
+  <style type="text/css">
+  /* Change the white to any color ;) */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active  {
+            -webkit-box-shadow: 0 0 0 30px white inset !important;
+        }
+      .btn .btn-l-spinner {
+          width: 20px;
+          float: right;
+          display: none;
+          position: relative;
+          top: 9px;
+          right: -5px;
+      }
+    
+  </style>
 </head>
 <body class="grey lighten-3"">
 
   <!-- NAVBAR -->
-  <nav class="z-depth-0 grey lighten-4">
+  <nav class="z-depth-0 grey lighten-5">
     <div class="nav-wrapper container">
       <a href="#" class="brand-logo">
         <img src="img/logo.svg" style="width: 180px; margin-top: 10px;">
@@ -49,8 +67,15 @@
           <input type="password" name="password" id="signup-password" required />
           <label for="signup-password">Choose password</label>
         </div>
-        <button class="btn waves-dark waves-effect yellow darken-2 z-depth-0">Sign up</button>
+        <div class="input-field">
+            <input type="text" name="signupbio" id="signup-bio" required />
+            <label for="signup-password">Set One Line Bio</label>
+          </div>
+        <button class="btn waves-dark waves-effect yellow darken-2 z-depth-0">Sign up
+            <img class="btn-l-spinner" src="img/loading-spin.svg">
+        </button>
       </form>
+      <span class="show-err red-text"></span>
     </div>
   </div>
 
@@ -67,8 +92,11 @@
           <input type="password" name="password" id="login-password" required />
           <label for="login-password">Your password</label>
         </div>
-        <button class="btn waves-dark waves-effect yellow darken-2 z-depth-0">Login</button>
+        <button class="btn waves-dark waves-effect yellow darken-2 z-depth-0">Login
+            <img class="btn-l-spinner" src="img/loading-spin.svg">
+        </button>
       </form>
+      <span class="show-err red-text"></span>
     </div>
   </div>
 
@@ -82,24 +110,35 @@
 
   <!-- CREATE GUIDE MODAL -->
   <div id="modal-create" class="modal">
+
     <div class="modal-content">
+
       <h4>Create Guide</h4><br />
+
       <form id="create-form">
+
         <div class="input-field">
           <input type="text" name="title" id="title" required>
           <label for="title">Guide Title</label>
         </div>
+
         <div class="input-field">
           <textarea id="content" name="content" class="materialize-textarea" required></textarea>
           <label for="content">Guide Content</label>
         </div>
-        <button class="btn waves-dark waves-effect yellow darken-2 z-depth-0">Create</button>
+
+        <button class="btn waves-dark waves-effect yellow darken-2 z-depth-0">Create
+          <img class="btn-l-spinner" src="img/loading-spin.svg">
+        </button>
+
       </form>
+      <span class="show-err red-text"></span>
     </div>
   </div>
 
   <!-- GUIDE LIST -->
   <div class="container" style="margin-top: 40px;">
+     
     <ul class="collapsible z-depth-0 guides" style="border: none;">
     </ul>
   </div>
