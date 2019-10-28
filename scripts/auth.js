@@ -1,61 +1,76 @@
+// add admin to cloud function addAdminRole
+const addAdminForm = document.querySelector('.admin-actions');
+addAdminForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    const adminEmail = this.adminEmail.value;
+    const addAdminRole = functions.httpsCallable('addAdminRole');
+    addAdminRole({email: adminEmail}).then(result=>{
+        console.log(result);
+    })
+});
 // listen for auth status changes
 auth.onAuthStateChanged((user)=>{
+
+    // invoke unauthenticate ui function 
     initAndReset();
     setUpUi(user);
-    if(user){
 
+    // check user is not null 
+    if(user){
+       //get user user claims from  addAdmin cloud onCall function 
+        user.getIdTokenResult().then(idTokenResult=>{
+        user.admin = idTokenResult.claims.admin;
         db.collection('guides').get().then(snapshot=>{
             if(snapshot.empty){
-               setupGuides('EMPTY');
+                setupGuides('EMPTY');
             }
         });
 
+        // get every guides when added new guides
         db.collection('guides').onSnapshot((response)=>{
             const changes = response.docChanges();
-
             changes.forEach(change=>{
                 switch (change.type) {
-                    case 'added':
-                        setupGuides(change.doc);
-                        break;
-                    default:
-                        break;
-                }
-            });
-        }, err => console.log(err) );
-
-
-    // Create Guieds 
-    const createGuideFrom = document.querySelector('#create-form');
-    createGuideFrom.addEventListener('submit', function(e){
-        e.preventDefault();
-
-        const errCont = this.parentNode.querySelector(".show-err");
-        const spinner = this.querySelector('.btn-l-spinner');
-        spinner.style.display = 'block';
-
-        db.collection("guides").add({
-            title: this.title.value,
-            content: this.content.value,
-        })
-        .then(()=>{
-            errCont.innerHTML = '';
-            spinner.style.display = 'none';
-            const model = document.querySelector("#modal-create");
-            M.Modal.getInstance(model).close();
-            this.reset();
-        })
-        .catch(err=> {
-            spinner.style.display = 'none';
-            errCont.innerHTML = err.message;
+                case 'added':
+                setupGuides(change.doc);
+                break;
+            }
         });
-    });
-        
-    }else{
-        setupGuides(null);
-    }
+        }, (err) => {
+          console.log(err) ;
+       }); 
+ });
+}else{
+    setupGuides(null);
+  }
 });
 
+   // Create Guieds 
+const createGuideFrom = document.querySelector('#create-form');
+createGuideFrom.addEventListener('submit', function(e){
+   e.preventDefault();
+
+    const errCont = this.parentNode.querySelector(".show-err");
+    const spinner = this.querySelector('.btn-l-spinner');
+    spinner.style.display = 'block';
+
+    // add new guide to guides collection 
+    db.collection("guides").add({
+        title: this.title.value,
+        content: this.content.value,
+    })
+    .then(()=>{
+        errCont.innerHTML = '';
+        spinner.style.display = 'none';
+        const model = document.querySelector("#modal-create");
+        M.Modal.getInstance(model).close();
+        this.reset();
+    })
+    .catch(err=> {
+        spinner.style.display = 'none';
+        errCont.innerHTML = err.message;
+    });
+});
 
 
 // sign-up form
@@ -110,6 +125,7 @@ loginform.addEventListener('submit', function(e){
     const spinner = this.querySelector('.btn-l-spinner');
     spinner.style.display = 'block';
 
+    // sing in existing user 
     auth.signInWithEmailAndPassword(email, password)
     .then((cred)=>{
         spinner.style.display = 'none';
@@ -124,4 +140,3 @@ loginform.addEventListener('submit', function(e){
         errCont.innerHTML = err.message;
     });
 });
-
